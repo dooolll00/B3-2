@@ -32,3 +32,37 @@
 - 미해결: 실제 API 정상 응답 검증 및 별도 기능 브랜치 작업은 미완료.
 - 커밋 메시지: docs: clarify installation and verification status. 아래 단계에서 commit/push 진행 후 실제 결과 추가 기록 예정.
 - 다음: 문서 커밋·push 및 원격 SHA 대조. B3-1 변경 없음.
+
+### 문서 업로드 결과
+
+- 커밋: 3eefd87 — docs: clarify installation and verification status.
+- push: origin/main 성공(9e76bce → 3eefd87). git ls-remote로 원격 main과 로컬 HEAD 일치 확인.
+- README·검증 문서는 GitHub에 반영 완료. 이 업로드 결과 추가 기록은 로컬에 보관하며 아직 별도 커밋하지 않음.
+- 다음: 실제 API 검증은 크레딧 확보 후 진행. 이번 문서 요청에 남은 작업 없음.
+
+## 2026-11-05 19:19 KST — README Git 변경 준비 예시 수정
+
+- 요청: 올바른 clone 명령 확인, 복제 직후 변경이 없는 상황을 반영한 미리보기 순서 수정, 실제 API 미검증 안내 유지.
+- 변경 파일: README.md, WORK_LOG.md.
+- 작업: 실제 설치 블록의 clone 명령은 이미 일반 URL로 올바르게 작성되어 있어 유지. Git 준비 예시는 git status → preview → 새 파일 스테이징 안내 주석으로 교체. 상단 무료 크레딧 부재·실제 API 미검증 문구 유지. 선택적인 소개 축약은 적용하지 않음. 검증 문서 링크는 정상 상대경로 docs/verification.md 유지.
+- 검증: Python 문자열 검사로 설치 명령·교체 내용·미검증 문구·상대 링크 확인 통과, git diff --check 통과. 문서 변경이므로 자동 테스트 재실행 없음.
+- 미해결/다음: 실제 API 검증 미완료. 이번 README 및 작업 기록 변경은 로컬에 있으며 업로드 시 반영 필요.
+- Git commit/push: 이번 요청에서는 실행하지 않음.
+
+## 2026-11-05 19:22 KST — 검증 문서의 수행 결과와 향후 절차 분리
+
+- 요청: 실제 API 검증 절차를 미수행으로 명시하고 GitHub 업로드 결과를 별도 섹션으로 분리. 모의 요청 0회 설명과 실제 API 증빙 미완료 항목 유지.
+- 변경 파일: docs/verification.md, WORK_LOG.md.
+- 작업: 요청한 API 절차 1~6번 및 미수행 안내 반영, GitHub 업로드 검증 6개 항목 추가. WORK_LOG 업로드 결과 예고 문장을 기존 커밋/동기화 근거 설명으로 교체. README 및 코드 변경 없음.
+- 검증: 문자열 검사로 필수 유지 항목과 섹션 분리 확인, git diff --check 통과. 문서 변경으로 자동 테스트 재실행 생략. 기존 업로드 기록을 정리했으며 이번에 원격 동기화를 재조회한 것은 아님.
+- 미해결/다음: 실제 API 검증 미수행. 최근 README·검증 문서·기록 변경은 추후 업로드 필요.
+- Git commit/push: 없음.
+
+## 2026-11-05 19:23 KST — 실제 API 검증 절차 제목 조정
+
+- 요청: 준비 단계 일부는 이미 수행했으므로 절차 제목을 실제 API 호출 검증 절차 (미완료)로 변경.
+- 변경 파일: docs/verification.md, WORK_LOG.md.
+- 작업: 해당 제목 한 줄만 변경하고 나머지 검증 문서 본문 유지.
+- 검증: 기존 제목 1개 확인 후 치환, git diff --check 통과. 문서 제목 수정으로 테스트 생략.
+- 미해결/다음: 실제 API 호출 검증 미완료, 최근 문서 변경 업로드 필요.
+- Git commit/push: 없음.

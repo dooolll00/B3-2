@@ -37,10 +37,14 @@ API 키를 코드·README·작업 기록·스크린샷에 넣지 마세요. API 
 대상 Git 저장소 **루트**에서 실행합니다. 도구를 다른 저장소에 적용할 때는 그 저장소로 이동한 뒤 `python /경로/B3-2/main.py commit`처럼 실행하세요.
 
 ```bash
-# 이 프로젝트를 처음 검증할 때: 필요한 소스와 문서를 검토한 뒤 스테이징
-# git add는 사용자가 직접 수행하며 CLI에서는 실행하지 않습니다.
-git add main.py README.md AGENTS.md WORK_LOG.md .gitignore docs tests
+# Git 저장소 루트에서 실행합니다.
+git status
+
+# 변경 사항이 있다면 전송 내용을 미리 확인합니다.
 python main.py all --preview
+
+# 새 파일의 내용까지 분석하려면 먼저 스테이징합니다.
+# git add 파일명
 ```
 
 - `git status --porcelain=v1 -z`로 파일과 상태를 읽습니다.

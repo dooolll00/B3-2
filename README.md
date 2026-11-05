@@ -2,21 +2,21 @@
 
 Git 변경 내용을 읽어 AI로 **변경 요약·커밋 메시지·PR 제목과 본문**을 만드는 Python CLI입니다. 출력한 초안은 검토 후 복사해 사용합니다.
 
-현재 로컬 구현과 자동 테스트 22개가 통과했습니다. 실제 OpenAI API 호출과 GitHub 업로드는 아직 완료하지 않았습니다. 테스트 대역과 아래 설명용 예시는 실제 AI 실행 증빙이 아닙니다. [요구사항별 진행 상태](docs/verification.md)
+자동화 테스트 22개가 통과했으며 GitHub 저장소 업로드를 완료했습니다. 실제 OpenAI API 호출은 무료 크레딧이 없어 검증하지 못했습니다. 테스트 대역과 아래 설명용 예시는 실제 AI 실행 증빙이 아닙니다. [요구사항별 진행 상태](docs/verification.md)
 
 ## 설치
 
 Python **3.10 이상**, Git, 인터넷 연결이 필요합니다. 외부 Python 패키지는 사용하지 않습니다.
 
 ```bash
-cd /Users/dooolll5969/Desktop/B3-2
-python3.12 --version
+git clone https://github.com/dooolll00/B3-2.git
+cd B3-2
 python3.12 -m venv .venv
 source .venv/bin/activate
 python main.py --help
 ```
 
-이 Mac의 기본 `python3`은 3.9이므로 `python3.12`를 사용합니다. 다른 환경에서는 3.10 이상인 Python 실행 파일을 선택하세요. `.venv` 활성화 후의 `python`은 그 버전을 사용합니다.
+Python 3.10 이상이 필요합니다. 실행 환경에 설치된 Python 버전을 확인한 뒤 적절한 실행 파일을 사용하세요. 본 프로젝트는 Python 3.12.13에서 검증했습니다. `.venv` 활성화 후의 `python`은 그 버전을 사용합니다.
 
 ## API 키 설정
 
@@ -162,6 +162,8 @@ feat: CLI 입력 검증 추가
 
 ## 테스트와 제출
 
+가상환경을 활성화한 상태에서 실행하세요. 테스트는 Python 3.12 환경에서 실행했으며 22개 테스트가 모두 통과했습니다. 실제 OpenAI API를 호출하지 않고 모의 응답을 사용합니다.
+
 ```bash
 python -m unittest discover -s tests -v
 ```
@@ -170,16 +172,20 @@ python -m unittest discover -s tests -v
 
 실제 API 검증은 변경을 준비하고 `--preview` 확인 후 `python main.py all --max-tokens 2500`을 실행합니다. 키를 제외한 명령·출력·실행 시각·호출 횟수를 보관하세요.
 
-GitHub 저장소는 사용자가 새로 만들 예정입니다. 생성할 때 README·라이선스·gitignore 없이 빈 저장소를 만들면 충돌을 줄일 수 있습니다. 원격 주소를 받은 뒤 인증 가능한 터미널에서 다음 흐름으로 진행합니다(아직 실행하지 않음).
+### GitHub 업로드 결과
 
-```bash
-git add main.py README.md AGENTS.md WORK_LOG.md .gitignore docs tests
-git commit -m "feat: add AI Git draft generator"
-git remote add origin <새로_만든_GitHub_저장소_URL>
-git push -u origin main
-```
+- 저장소: https://github.com/dooolll00/B3-2
+- 브랜치: main
+- 최초 커밋: 9e76bce
+- 업로드 상태: 완료
+- 로컬·원격 브랜치 동기화: 확인 완료
 
-초안 생성은 커밋 전에 수행하세요. 브랜치 작업 흐름은 다음 의미 있는 개선을 `git switch -c feature/개선이름`에서 진행하며 남깁니다. 실제 업로드 주소와 커밋·브랜치 증빙은 완료 후 추가합니다.
+실제 OpenAI API 호출은 무료 크레딧이 없어 검증하지 못했습니다.
+자동화 테스트는 모의 API 응답을 사용하여 22개 모두 통과했습니다.
+
+초안 생성은 변경 사항을 커밋하기 전에 수행해야 합니다.
+현재 도구는 작업 트리와 스테이징된 변경 사항을 분석하며,
+이미 커밋된 변경 사항은 분석하지 않습니다.
 
 선택 보너스 중 `--convention`과 조정 가능한 안전 모드 기능은 구현했지만, 이전 미션의 팀 스타일 분석·비교 생성 결과와 실제 PR 증빙은 아직 없습니다.
 

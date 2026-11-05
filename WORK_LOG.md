@@ -22,3 +22,13 @@
 - 미해결: 실제 AI 응답·생성 결과 증빙, GitHub 저장소 URL·인증·커밋/브랜치 히스토리 및 push. API 모델 계정 접근 여부 미검증. 컨벤션 옵션/안전 정책 기능은 있지만 선택 보너스의 실제 PR·생성 전후 비교 증빙은 없음.
 - 다음: 필요한 파일 스테이징 → preview 확인 → 같은 사용자 터미널에 API 키 환경변수 설정 → all --max-tokens 2500 실제 실행 및 결과 보관. 사용자가 만든 GitHub URL 확보 후 커밋/브랜치·push와 원격 반영 확인. 새 키를 발급받아 코드나 채팅으로 전달할 필요 없이 사용자 터미널에서 설정.
 - Git commit/push: 없음.
+
+## 2026-11-05 19:16 KST — 공용 설치 안내와 업로드 상태 문서 정리
+
+- 요청: README의 개인 경로를 clone 안내로 교체, Python 버전·모의 테스트 설명 보완, 실제 API 미검증 문구 유지, 검증 문서 업로드 상태 일치 및 원격 반영.
+- 변경 파일: README.md, docs/verification.md, WORK_LOG.md. 기존 사용자 문서 변경도 포함해 최종 내용 검토. 코드 변경 없음.
+- 작업: git clone/cd/가상환경 설치 흐름과 Python 3.12.13 검증 환경 명시. 모의 응답 22개 테스트와 실제 API 미검증을 구분. 이미 완료된 GitHub 업로드 및 최초 커밋 근거 유지, 무료 크레딧 부재는 사용자 확인 내용으로 표시.
+- 확인: GitHub 연결 도구에서 원격 main=9e76bce 확인. git fetch origin 성공, HEAD...origin/main 차이 0/0. git diff --check 통과. 문서 변경이므로 자동 테스트 재실행 생략.
+- 미해결: 실제 API 정상 응답 검증 및 별도 기능 브랜치 작업은 미완료.
+- 커밋 메시지: docs: clarify installation and verification status. 아래 단계에서 commit/push 진행 후 실제 결과 추가 기록 예정.
+- 다음: 문서 커밋·push 및 원격 SHA 대조. B3-1 변경 없음.

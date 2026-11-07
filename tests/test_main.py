@@ -100,12 +100,14 @@ class RepoTest(unittest.TestCase):
         self.assertEqual(context['files'][0]['old_path'], 'app.py')
         self.assertIn('rename to :(glob)*.py', context['diff'])
 
-    def test_partial_private_key_is_masked_before_truncation(self):
+    def test_private_key_file_is_excluded_before_truncation(self):
         Path('config.txt').write_text('-----BEGIN PRIVATE KEY-----\n' +
                                       'hidden-key-material\n' * 40 +
                                       '-----END PRIVATE KEY-----\n')
+        Path('safe.py').write_text('pass\n')
         self.git('add', '.')
         context = main.collect(self.args('--max-lines', '8'))
+        self.assertEqual(context['excluded_count'], 1)
         self.assertNotIn('hidden-key-material', json.dumps(context))
 
     def test_end_to_end_cli_with_mock_http(self):
@@ -123,6 +125,39 @@ class RepoTest(unittest.TestCase):
             self.assertIn('## How to Test', output.getvalue())
             payload = json.loads(api.call_args.args[0].data)
             self.assertIn('+value = 2', payload['messages'][1]['content'])
+
+    def test_private_key_middle_change_excludes_entire_file(self):
+        self.base()
+        original = ('-----BEGIN PRIVATE KEY-----\n' + 'fake-material\n' * 30 +
+                    '-----END PRIVATE KEY-----\n')
+        Path('config.txt').write_text(original)
+        self.git('add', 'config.txt')
+        self.git('-c', 'user.name=Test', '-c', 'user.email=test@example.invalid',
+                 'commit', '-qm', 'synthetic fixture')
+        lines = original.splitlines()
+        lines[15] = 'changed-fake-material'
+        Path('config.txt').write_text('\n'.join(lines) + '\n')
+        Path('app.py').write_text('value = 2\n')
+        for staged in (False, True):
+            if staged:
+                self.git('add', 'config.txt')
+            for extra in ([], ['--no-safe-mode'], ['--max-files', '1']):
+                with self.subTest(staged=staged, extra=extra):
+                    context = main.collect(self.args(*extra))
+                    self.assertEqual(context['excluded_count'], 1)
+                    self.assertEqual(context['omitted_files'], 0)
+                    self.assertEqual([f['path'] for f in context['files']], ['app.py'])
+                    self.assertNotIn('fake-material', json.dumps(context))
+
+    def test_removed_private_key_header_still_excludes_file(self):
+        self.base()
+        Path('config.txt').write_text('-----BEGIN PRIVATE KEY-----\nfake-material\n')
+        self.git('add', 'config.txt')
+        self.git('-c', 'user.name=Test', '-c', 'user.email=test@example.invalid',
+                 'commit', '-qm', 'synthetic fixture')
+        Path('config.txt').write_text('fake-material\n')
+        with self.assertRaisesRegex(main.AppError, '전송 가능한 파일'):
+            main.collect(self.args('--no-safe-mode'))
 
     def test_subdirectory_rejected(self):
         Path('child').mkdir()
@@ -200,6 +235,18 @@ class GenerationTest(unittest.TestCase):
                     main.request_ai([], self.args(), 'fake')
                 self.assertIn(str(code), str(caught.exception))
                 self.assertNotIn('secret', str(caught.exception))
+
+    def test_malformed_response_shapes_are_reported(self):
+        responses = [None, [], {}, {'choices': None}, {'choices': {}},
+                     {'choices': []}, {'choices': [None]}, {'choices': ['invalid']},
+                     {'choices': [{}]}, {'choices': [{'message': None}]},
+                     {'choices': [{'message': []}]}]
+        for result in responses:
+            with self.subTest(result=result):
+                response = io.StringIO(json.dumps(result))
+                with patch('urllib.request.urlopen', return_value=response):
+                    with self.assertRaisesRegex(main.AppError, '응답 구조'):
+                        main.request_ai([], self.args(), 'fake')
 
     def test_invalid_header_key_is_not_sent_or_printed(self):
         with patch('urllib.request.urlopen') as api:

@@ -15,6 +15,7 @@ import urllib.request
 
 ENDPOINT = 'https://api.openai.com/v1/chat/completions'
 MAX_INPUT_CHARS = 60000
+PRIVATE_KEY_HEADER = re.compile(r'(?m)^[ +\-]-----BEGIN [^-\r\n]*PRIVATE KEY-----\r?$')
 
 
 class AppError(Exception):
@@ -92,23 +93,39 @@ def collect(args: argparse.Namespace) -> dict | None:
         changes.append((state, path, old))
     eligible = [(s, p, o) for s, p, o in changes
                 if not sensitive(p) and not (o and sensitive(o))]
-    selected = eligible[:args.max_files] if args.safe_mode else eligible
-    if not selected:
-        raise AppError('전송 가능한 파일이 없습니다. 민감 파일은 항상 제외됩니다.')
     files = []
     chunks = []
-    for state, path, old in selected:
-        files.append({'status': state, 'path': path, 'old_path': old})
+    excluded_count = len(changes) - len(eligible)
+    omitted_files = 0
+    for state, path, old in eligible:
+        file_chunks = []
         if state == '??':
-            chunks.append(f'Untracked file: {path} (내용 미수집; 필요하면 git add 후 재실행)')
+            file_chunks.append(f'Untracked file: {path} (내용 미수집; 필요하면 git add 후 재실행)')
+        else:
+            paths = [path] + ([old] if old else [])
+            blocked = False
+            for staged in (False, True):
+                options = ['diff', *(['--cached'] if staged else []),
+                           '--no-ext-diff', '--no-textconv', '--no-color']
+                # Inspect complete before/after context locally. A small diff may
+                # omit the header while exposing private-key material in its middle.
+                full_diff = git(*options, '--unified=2147483647', '--', *paths)
+                if PRIVATE_KEY_HEADER.search(full_diff):
+                    blocked = True
+                    break
+                diff = git(*options, '--unified=3', '--', *paths)
+                if diff:
+                    file_chunks.append(('STAGED\n' if staged else 'UNSTAGED\n') + diff)
+            if blocked:
+                excluded_count += 1
+                continue
+        if args.safe_mode and len(files) >= args.max_files:
+            omitted_files += 1
             continue
-        paths = [path] + ([old] if old else [])
-        for staged in (False, True):
-            diff = git('diff', *(['--cached'] if staged else []),
-                       '--no-ext-diff', '--no-textconv', '--no-color',
-                       '--unified=3', '--', *paths)
-            if diff:
-                chunks.append(('STAGED\n' if staged else 'UNSTAGED\n') + diff)
+        files.append({'status': state, 'path': path, 'old_path': old})
+        chunks.extend(file_chunks)
+    if not files:
+        raise AppError('전송 가능한 파일이 없습니다. 민감 파일은 항상 제외됩니다.')
     diff = '\n'.join(chunks)
     if args.safe_mode:
         diff = mask(diff)
@@ -117,8 +134,8 @@ def collect(args: argparse.Namespace) -> dict | None:
     if clipped:
         diff = '\n'.join(lines[:args.max_lines]) + '\n[이하 diff 생략]'
     context = {'changed_count': len(changes), 'files': files,
-               'excluded_count': len(changes) - len(eligible),
-               'omitted_files': len(eligible) - len(selected),
+               'excluded_count': excluded_count,
+               'omitted_files': omitted_files,
                'diff_truncated': clipped, 'diff': diff,
                'reason': args.reason, 'requirements': args.requirements,
                'convention': args.convention}
@@ -204,9 +221,15 @@ def request_ai(messages: list, args: argparse.Namespace, key: str) -> str:
     except (ValueError, UnicodeError) as exc:
         raise AppError('API 응답이 올바른 JSON이 아닙니다.') from exc
     try:
+        if not isinstance(result, dict) or not isinstance(result.get('choices'), list):
+            raise AppError('API 응답 구조가 예상 형식과 다릅니다.')
         choice = result['choices'][0]
+        if not isinstance(choice, dict):
+            raise AppError('API 응답 구조가 예상 형식과 다릅니다.')
         if choice.get('finish_reason') == 'length':
             raise AppError('출력 토큰 한도에 도달했습니다. --max-tokens를 늘려 재실행하세요.')
+        if not isinstance(choice.get('message'), dict):
+            raise AppError('API 응답 구조가 예상 형식과 다릅니다.')
         content = choice['message']['content']
         if not isinstance(content, str) or not content.strip():
             raise AppError('AI가 텍스트를 반환하지 않았습니다.')

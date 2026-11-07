@@ -130,7 +130,7 @@ index 0000000..a33e291
 
 실제 입력 미리보기 화면입니다.
 
-![실제 staged diff와 API 요청 전 미리보기](docs/screenshots/03-input-preview.png)
+<img src="docs/screenshots/03-input-preview.png" alt="실제 staged diff와 API 요청 전 미리보기" width="600">
 
 ### 2. 실제 API 호출과 생성 결과
 
@@ -183,7 +183,7 @@ test: OpenAI API 통합 테스트용 파일 추가
 
 아래는 당시 실제 출력 화면입니다.
 
-![실제 OpenAI API 호출로 생성한 커밋 메시지와 PR 초안](docs/screenshots/02-gpt-generation.png)
+<img src="docs/screenshots/02-gpt-generation.png" alt="실제 OpenAI API 호출로 생성한 커밋 메시지와 PR 초안" width="600">
 
 실제 호출은 코드 보강 이전에 수행했습니다. 이후 보강한 코드의 검증은 아래 자동 테스트 결과로 구분합니다. 토큰 사용량과 실제 청구 금액은 당시 기록에 포함되어 있지 않습니다.
 
@@ -243,7 +243,7 @@ python3.12 -m unittest discover -s tests -v
 
 최초 구현에서는 자동 테스트 22개가 통과했습니다. 아래는 당시 실행 결과입니다.
 
-![수정 전 자동 테스트 22개 통과 화면](docs/screenshots/01-unit-tests.png)
+<img src="docs/screenshots/01-unit-tests.png" alt="수정 전 자동 테스트 22개 통과 화면" width="600">
 
 ### 보강 후: 25개 테스트 통과
 
@@ -251,7 +251,7 @@ python3.12 -m unittest discover -s tests -v
 
 아래는 사용자가 현재 코드에서 다시 실행한 **자동 테스트 25개 통과** 화면입니다. API 오류 처리와 개인키 보호를 보강한 회귀 테스트를 포함하며, 실행 결과는 `Ran 25 tests in 1.843s`, `OK`입니다.
 
-![자동 테스트 25개 통과 화면](docs/screenshots/04-unit-tests-25.png)
+<img src="docs/screenshots/04-unit-tests-25.png" alt="자동 테스트 25개 통과 화면" width="600">
 
 ## 저장소와 수행 범위
 

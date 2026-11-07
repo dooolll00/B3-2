@@ -20,11 +20,11 @@
 | 사용 가이드 | 작성 완료 | [README](../README.md) |
 | 실제 API 정상 응답 증빙 | 완료 | 2026-11-07, gpt-4.1-mini 실제 호출 성공. 커밋·PR 초안 생성 확인 |
 | GitHub 저장소와 push | 완료 | https://github.com/dooolll00/B3-2, main 브랜치 push 성공 |
-| 커밋 히스토리·브랜치 흐름 | 부분 완료 | 커밋 9e76bce 생성, origin/main 동기화 확인. 별도 기능 브랜치 작업은 미수행 |
+| 커밋 히스토리·브랜치 흐름 | 완료 | docs/test-evidence의 af19fe9를 main에 dcb50ee로 병합. 두 브랜치 push 성공 기록 확인 |
 
 GitHub 저장소 업로드와 자동화 테스트 25개를 완료했습니다. 2026-11-07 실제 OpenAI API 호출에 성공하여 커밋 메시지와 PR 설명 생성까지 검증했습니다.
 
-GitHub 저장소 업로드 결과는 최초 커밋 및 원격 브랜치 동기화 기록을 통해 확인했습니다.
+GitHub 저장소 업로드 결과는 사용자 터미널의 push 성공 기록과 로컬 커밋 그래프로 확인했습니다. 원격 서버를 이번 문서 갱신에서 새로 조회한 것은 아닙니다.
 
 ## 실행한 검증
 
@@ -74,11 +74,16 @@ python -m unittest discover -s tests -v
 ## GitHub 업로드 검증
 
 - 저장소: https://github.com/dooolll00/B3-2
-- 브랜치: main
-- 최초 커밋: 9e76bce
-- GitHub push: 완료
-- origin/main 동기화: 확인 완료
-- 별도 기능 브랜치: 미수행
+- 기본 브랜치: `main`
+- 최초 커밋: `9e76bce`
+- 코드 보강 업로드: `3bed74a`
+- 별도 문서 브랜치: `docs/test-evidence`
+- 문서·테스트 증빙 커밋: `af19fe9`
+- main 병합 커밋: `dcb50ee` (`--no-ff` 사용)
+- GitHub push: `docs/test-evidence` 및 `main` 모두 성공
+- 병합 직후 상태: `origin/main` 동기화, 작업 폴더 깨끗함
+- 근거: 사용자 제공 push 및 `git log --graph` 출력, 로컬 커밋 그래프 확인
+- 위 업로드 결과는 `dcb50ee` 기준입니다. 이후 README·검증 문서·작업 로그 갱신분은 별도로 업로드해야 합니다.
 
 ## 선택 보너스
 

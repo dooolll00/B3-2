@@ -174,3 +174,19 @@
 - 결과: 검토 범위 내 필수 기능을 막는 결함 및 README 필수 내용 누락은 추가 발견하지 못함. 원문의 브랜치 작업 흐름은 별도 기능 브랜치/병합을 명시하지 않아 해석 여지 유지. 실제 PR은 선택 보너스.
 - 제출 상태: 사용자 제공 기록으로 3bed74a 코드 보강 push 성공 확인. 현재 git status는 README.md·WORK_LOG.md·docs/verification.md 수정 및 04-unit-tests-25.png 미추적이므로 이후 문서·이미지 변경의 업로드 필요. README 저장소 설명은 과거 e41f83f 기록 중심이므로 다음 갱신 때 3bed74a 업로드 기록과 최신 문서 변경을 구분해 정리 가능.
 - 미해결/다음 작업: 최신 문서·25개 테스트 이미지 commit/push 및 원격 확인. 이번 검토에서 실제 API 호출·commit·push·원격 재조회 없음. 추가 API 호출은 필수 아님.
+
+## 2026-11-07 19:40 KST — 브랜치 작업 및 병합 완료 문서 갱신
+
+- 요청: 별도 브랜치 작업이 없다는 기존 설명을 실제 완료 결과로 갱신.
+- 변경 파일: README.md, docs/verification.md, WORK_LOG.md.
+- 변경: docs/test-evidence의 af19fe9 및 main 병합 dcb50ee, 두 브랜치 push 성공, 코드 보강 3bed74a 업로드 기록 반영. 브랜치 흐름을 완료로 변경하고 실제 PR은 선택 보너스 미수행으로 구분. 과거 작업 로그는 유지.
+- 검증: 사용자 제공 push 성공/깨끗한 상태 기록과 로컬 git log --graph 대조. 문서의 오래된 미수행 문구 제거 및 SHA 반영 확인, git diff --check 통과. 문서만 변경하여 테스트 생략.
+- 미해결/다음 작업: 이번 문서 갱신분은 로컬 변경이므로 별도 commit/push 필요. 원격을 새로 조회하지 않음. API 호출·commit·push 없음.
+
+## 2026-11-07 19:42 KST — 브랜치 그래프 증빙 이미지 저장
+
+- 요청: 브랜치 흐름 캡처 파일 저장, README 추가 작성 불필요 여부 확인.
+- 변경 파일: docs/screenshots/05-branch-history.png, WORK_LOG.md.
+- 작업: 바탕화면 오후 7.40.43 캡처를 직접 확인 후 원본 그대로 복사. af19fe9 문서 브랜치 및 dcb50ee main 병합과 origin 참조가 표시됨. 이 로컬 캡처에는 git status 결과 영역은 포함되지 않음. README는 기존 브랜치 완료 설명을 유지하고 이미지 삽입하지 않음.
+- 검증: 원본/사본 SHA-256 일치 및 이미지 직접 확인, git diff --check 통과. 이미지·로그 변경으로 테스트 생략.
+- 미해결/다음 작업: 새 이미지와 문서 갱신분의 원격 반영은 별도 commit/push 필요. 저장 요청 완료. API 호출·commit·push 없음.
